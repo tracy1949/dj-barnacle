@@ -1,0 +1,33 @@
+name: '德鸡续期跑起来'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+     - main
+  schedule:
+    - cron: '30 11 * * 5'
+
+jobs:
+  auto_renew:
+    runs-on: ubuntu-latest
+    steps:
+      - name: '检测中'
+        uses: actions/checkout@v2
+
+      - name: '运行 python'
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.x'
+
+      - name: '安装PY依赖'
+        run: |
+          python -m pip install --upgrade requests
+          python -m pip install --upgrade beautifulsoup4
+      - name: '德鸡续期中'
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_USER_ID: ${{ secrets.TG_USER_ID }}          
+        run: python main.py
